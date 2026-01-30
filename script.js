@@ -33,35 +33,31 @@ function updateAnimations() {
 }
 
 // ===========================
-// FLOATING ELEMENT ANIMATION (3D CUBE)
+// FLOATING ELEMENT ANIMATION
 // ===========================
 function animateFloatingElement(scrollPercent) {
     // Move across screen horizontally
-    const moveX = scrollPercent * window.innerWidth * 0.6;
+    const moveX = scrollPercent * window.innerWidth * 0.8;
     
     // Move vertically with sine wave
-    const moveY = Math.sin(scrollPercent * Math.PI * 2) * 100;
+    const moveY = Math.sin(scrollPercent * Math.PI * 2) * 150;
     
     // Scale changes
-    const scale = 1 + scrollPercent * 0.3;
+    const scale = 1 + scrollPercent * 0.5;
     
-    // Apply transforms to container
+    // Rotation
+    const rotate = scrollPercent * 360 * 2;
+    
+    // Apply transforms
     floatingElement.style.transform = `
         translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))
         scale(${scale})
+        rotate(${rotate}deg)
     `;
     
-    // ROTACIÓN 3D del cubo basada en scroll
-    const cube = floatingElement.querySelector('.cube-3d');
-    if (cube) {
-        const rotateY = scrollPercent * 720; // 2 vueltas completas
-        const rotateX = scrollPercent * 360; // 1 vuelta completa
-        cube.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-    }
-    
     // Opacity fade in/out
-    const opacity = 1 - Math.abs(scrollPercent - 0.5) * 1.2;
-    floatingElement.style.opacity = Math.max(0.4, Math.min(1, opacity));
+    const opacity = 1 - Math.abs(scrollPercent - 0.5) * 1.5;
+    floatingElement.style.opacity = Math.max(0.3, Math.min(1, opacity));
 }
 
 // ===========================
@@ -146,8 +142,6 @@ function smoothScrollTo(targetPosition, duration = 1000) {
 // ===========================
 let mouseX = 0;
 let mouseY = 0;
-let currentRotateY = 0;
-let currentRotateX = 0;
 
 function onMouseMove(event) {
     mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
@@ -155,28 +149,26 @@ function onMouseMove(event) {
 }
 
 function updateMouseParallax() {
-    const cube = floatingElement.querySelector('.cube-3d');
-    if (cube) {
-        // Get current rotation from scroll
-        const transform = cube.style.transform;
-        const rotateYMatch = transform.match(/rotateY\(([-\d.]+)deg\)/);
-        const rotateXMatch = transform.match(/rotateX\(([-\d.]+)deg\)/);
-        
-        const baseRotateY = rotateYMatch ? parseFloat(rotateYMatch[1]) : 0;
-        const baseRotateX = rotateXMatch ? parseFloat(rotateXMatch[1]) : 0;
-        
-        // Add subtle mouse parallax to current rotation
-        const mouseInfluenceY = mouseX * 5;
-        const mouseInfluenceX = mouseY * 5;
-        
-        // Smooth interpolation
-        currentRotateY += (baseRotateY + mouseInfluenceY - currentRotateY) * 0.1;
-        currentRotateX += (baseRotateX - mouseInfluenceX - currentRotateX) * 0.1;
-        
-        cube.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
+    // Subtle movement based on mouse position
+    const orb = floatingElement.querySelector('.glass-orb');
+    if (orb) {
+        const moveX = mouseX * 20;
+        const moveY = mouseY * 20;
+        orb.style.transform = `translate(${moveX}px, ${moveY}px)`;
     }
 
     requestAnimationFrame(updateMouseParallax);
+}
+
+// ===========================
+// BUTTON INTERACTION
+// ===========================
+const glassButton = document.querySelector('.glass-button');
+if (glassButton) {
+    glassButton.addEventListener('click', () => {
+        // Scroll back to top smoothly
+        smoothScrollTo(0, 1500);
+    });
 }
 
 // ===========================
