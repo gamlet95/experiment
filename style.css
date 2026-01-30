@@ -97,6 +97,11 @@ body {
     padding: 100px 50px;
     z-index: 10;
 }
+#section2 {
+       background-image: url('https://www.shutterstock.com/image-photo/white-black-grainy-background-noise-600nw-2658786675.jpg');
+       background-size: cover;
+       background-attachment: fixed;
+   }
 
 /* ===========================
    TEXT LAYERS
